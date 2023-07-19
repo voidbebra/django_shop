@@ -1,0 +1,52 @@
+{% extends 'main/base.html' %}
+
+{% block title %}
+    Главная
+{% endblock %}
+
+{% block content %}
+<!-- Основное содержимое страницы -->
+<main>
+  <div class="container py-5">
+    <div class="row">
+      <!-- Блок с баннером -->
+      <div class="col-md-6 mb-4">
+        <img src="https://via.placeholder.com/600x400" alt="Баннер" class="img-fluid">
+        <p>*Фото класного, універсального магазину*</p>
+      </div>
+
+      <!-- Блок с новинками -->
+      <div class="col-md-6 mb-4">
+        <h2>Новинки</h2>
+        <div class="row">
+          {% for product in latest_products %}
+            <div class="col-6">
+              <div class="card" data-url="{{ product.id}}">
+                <img src="{{product.img}}" alt="Фото товара" class="card-img-top">
+                <div class="card-body">
+                  <h5 class="card-title">{{product.name}}</h5>
+                  {% if product.is_sale %} 
+                    <span class="text-muted text-decoration-line-through">${{ product.price }}</span>
+                    {{product.sale_price}}
+                  {% else %}
+                    <span class="card-text">${{product.price}}</span>
+                  {% endif %}
+                  <br><br>
+                  <form class="text-center" method="post" action="{% url 'cart_add' product.id %}">
+                    {{ cart_product_form }}
+                    {%csrf_token%}
+                    <select class="invisible" name="quantity" id="id_quantity">
+                        <option value="1" selected>1</option>
+                    <input class="btn btn-outline-dark mt-auto" type="submit" value="Add to cart">
+                  </form>
+
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}

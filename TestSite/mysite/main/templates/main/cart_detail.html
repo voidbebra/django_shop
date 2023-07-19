@@ -1,0 +1,106 @@
+{% extends "main/base.html" %}
+{% load static %}
+
+{% block title %}
+  Корзина покупок
+{% endblock %}
+
+{% block content %}
+  <h1>Корзина покупок</h1>
+  <table class="cart">
+    <thead>
+      <tr>
+        <th>Картинка</th>
+        <th>Товар</th>
+        <th>Обновить кол-во</th>
+        <th>Удалить</th>
+        <th>Кол-во</th>
+        <th>Цена за шт</th>
+        <th>Общая стоимость</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in cart %}
+          <tr class="{{ item.id }}">
+            <td>
+              <a href="#">
+                <img src="{{ item.img }}" style="width: 15%;">
+              </a>
+            </td>
+            <td>{{ item.name }}</td>
+            <td>
+              <form class="updateForm" action="{% url 'cart_add' item.id %}" method="post">
+                {{ item.update_quantity_form.quantity }}
+                {{ item.update_quantity_form.update }}
+                {% csrf_token %}
+              </form>
+            </td>
+            <td><a href="{% url 'cart_remove' item.id %}">Удалить</a></td>
+            <td class="quantity">
+              {{ item.quantity }}
+            </td>
+            <td class="num">${{ item.price }}</td>
+            <td class="num">${{ item.total_price }}</td>
+          </tr>
+      {% endfor %}
+      <tr class="total">
+        <td>Всего</td>
+        <td colspan="4"></td>
+        <td class="num">${{ cart.get_total_price }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="text-right">
+    <a href="{% url 'products' %}" class="button light">В магазин</a>
+    <a href="#" class="button">Оформить заказ</a>
+  </p>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+  $(".updateForm").each(function() {
+    $(this).find("select").change(function() {
+      updateCart($(this).closest(".updateForm"));
+    });
+  });
+
+  function updateCart(form) {
+    var formData = form.serialize();
+
+    $.ajax({
+      type: 'POST',
+      url: form.attr('action'),
+      data: formData,
+      dataType: 'json',
+      success: function(data) {
+
+        $.ajax({
+          type: 'GET',
+          url: '/cart', // URL второго AJAX-запроса
+          dataType: 'html',
+          success: function(data) {
+            console.log('Второй AJAX-запрос выполнен успешно.');
+            console.log(data);
+
+            // Здесь можете выполнить замену контента страницы
+            $('body').html(data); // Пример замены контента, замените '#contentContainer' на ваш селектор
+
+            // Или выполнить другие действия после успешного выполнения второго запроса
+          },
+          error: function(xhr, status, error) {
+            console.log('Произошла ошибка при выполнении второго AJAX-запроса.');
+            console.log(error);
+          }
+        });
+      },
+      error: function(xhr, status, error) {
+        // Обработка ошибки запроса
+        console.log("Произошла ошибка при отправке запроса.");
+        console.log(error);
+      }
+    });
+  }
+});
+</script>
+
+{% endblock %}

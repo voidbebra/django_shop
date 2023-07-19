@@ -1,0 +1,44 @@
+{% extends 'main/base.html' %}
+
+{% block title %}
+    Products
+{% endblock %}
+
+{% block content %}
+<div class="container mb-10">
+    <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+    {% for product in products %}
+        <div class="product-container">
+            <div class="card" onclick="product_detail('products/{{ product.id }}')">
+                <!-- Product image-->
+                <img class="card-img-top" src="{{ product.img }}" alt="SYKAA" />
+                <!-- Product details-->
+                <div class="card-body p-4">
+                    <div class="text-center">
+                        <!-- Product name-->
+                        <h5 class="fw-bolder">{{product.name}}</h5>
+                        <!-- Product price-->
+                        {% if product.is_sale %} 
+                            <span class="text-muted text-decoration-line-through">${{ product.price }}</span>
+                            {{product.sale_price}}
+                        {% else %}
+                            <span>${{ product.price }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <!--  Product actions-->
+                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                    <form class="updateForm" method="post" action="{% url 'cart_add' product.id %}">
+                        {{ cart_product_form }}
+                        {%csrf_token%}
+                        <select class="invisible" name="quantity" id="id_quantity">
+                            <option value="1" selected>1</option>
+                        <input class="btn btn-outline-dark" type="submit" value="Add to cart">
+                    </form>
+                </div> 
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+</div>
+{% endblock %}

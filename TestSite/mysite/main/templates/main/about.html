@@ -1,0 +1,43 @@
+{% extends 'main/base.html' %}
+
+{% block title %}
+    About me
+{% endblock %}
+
+{% block content %}
+    <!-- Шапка страницы -->
+<header class="py-3 bg-light">
+    <div class="container">
+      <h1 class="text-center">My page</h1>
+    </div>
+  </header>
+  
+  <!-- Основное содержимое страницы -->
+  <main>
+    <div class="container py-5">
+      <div class="row">
+        <!-- Блок с фотографией -->
+        <div class="col-md-4 mb-4">
+          <img src="main/media/pictures/batman.jpg" style="
+            width: 220px; 
+            height: 300px; 
+            object-fit: cover;
+            object-position: 50% 25%;"
+            alt="My Photo" class="img-fluid">
+        </div>
+  
+        <!-- Блок с описанием -->
+        <div class="col-md-8">
+          <h2>About me</h2>
+          <p>I`m batman(for real)</p>
+  
+          <h2>My hobbies</h2>
+          <ul>
+            <li>Look at arts with femboys(often)</li>
+            <li>Python Django(rarely)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </main>
+{% endblock %}
